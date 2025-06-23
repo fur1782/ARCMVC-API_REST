@@ -1,9 +1,12 @@
-const express = require('express')
-const crypto = require('node:crypto')
-const cors = require('cors')
+import express, { json } from 'express'
+import { randomUUID } from 'node:crypto'
+import cors from 'cors'
 
-const movies = require('./movies.json')
-const { validateMovie, validatePartialMovie } = require('./schemas/movies')
+// movies is a JSON file must be imported with "with" { type: 'json' }
+// This is a feature of ES Modules in Node.js
+import movies from './movies.json' with { type: 'json' }
+import { validateMovie, validatePartialMovie } from './schemas/movies.js'
+
 
 // const ACCEPTED_ORIGINS = [
 //     'http://127.0.0.1:5500'
@@ -11,7 +14,7 @@ const { validateMovie, validatePartialMovie } = require('./schemas/movies')
 
 const app = express()
 app.use(cors())
-app.use(express.json())
+app.use(json())
 //Mostra la tecnologia que s'està utilitzant, deshabilitat per seguretat
 app.disable('x-powered-by')
 
@@ -56,7 +59,7 @@ app.post('/movies', (req, res) => {
     }
 
     const newMovie = {
-        id: crypto.randomUUID(),
+        id: randomUUID(),
         ...result.data
     }
 
