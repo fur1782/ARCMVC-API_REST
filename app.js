@@ -1,11 +1,10 @@
 import express, { json } from 'express'
-import { randomUUID } from 'node:crypto'
-import cors from 'cors'
 
 // movies is a JSON file must be imported with "with" { type: 'json' }
 // This is a feature of ES Modules in Node.js
 import movies from './movies.json' with { type: 'json' }
-import { validateMovie, validatePartialMovie } from './schemas/movies.js'
+import { moviesRouter } from './routes/movies.js'
+import { corsMiddleware } from './middleware/cors.js'
 
 
 // const ACCEPTED_ORIGINS = [
@@ -13,7 +12,7 @@ import { validateMovie, validatePartialMovie } from './schemas/movies.js'
 // ]
 
 const app = express()
-app.use(cors())
+app.use(corsMiddleware())
 app.use(json())
 //Mostra la tecnologia que s'està utilitzant, deshabilitat per seguretat
 app.disable('x-powered-by')
@@ -30,88 +29,7 @@ app.get('/genres', (req, res) => {
     res.json({genres: filteredGenres})
 })
 
-app.get('/movies', (req, res) => {
-    // res.header('Access-Control-Allow-Origin', '*')
-    const { genre } = req.query
-    if(genre){
-        const filteredMovies = movies.filter(
-            movie => movie.genre.some(g => g.toLowerCase() === genre.toLowerCase())
-        )
-        return res.json(filteredMovies)
-    }
-    res.json(movies)
-})
-
-app.get('/movies/:id', (req, res) => { // path-to-regexp
-    const { id } = req.params
-    const movie = movies.find(movie => movie.id === id)
-    if (movie) return res.json(movie)
-
-    res.status(404).json({message: 'Movie not found'})
-})
-
-app.post('/movies', (req, res) => {
-    
-    const result = validateMovie(req.body)
-
-    if (result.error){
-        return res.status(400).json({error: JSON.parse(result.error.message)})
-    }
-
-    const newMovie = {
-        id: randomUUID(),
-        ...result.data
-    }
-
-    movies.push(newMovie)
-
-    res.status(201).json(newMovie)
-})
-
-app.delete('/movies/:id', (req, res) => {
-    const {id} = req.params
-    const movieIndex = movies.findIndex(movie => movie.id === id)
-
-    if(movieIndex < 0){
-        return res.status(404).json({message: 'Movie not found'})
-    }
-
-    movies.splice(movieIndex, 1)
-
-    return res.json({message: 'Movie deleted'})
-})
-
-app.patch('/movies/:id', (req, res) => {
-    const result = validatePartialMovie(req.body)
-    
-    if (!result.success) {
-        return res.status(400).json({error: JSON.parse(result.error.message)})
-    }
-    
-    const {id} = req.params
-    const movieIndex = movies.findIndex(movie => movie.id === id)
-
-    if (movieIndex < 0) return res.status(404).json({message: 'Movie not found'})
-
-    const updateMovie = {
-        ...movies[movieIndex],
-        ...result.data
-    }
-    
-    movies[movieIndex] = updateMovie
-
-    return res.json(updateMovie)
-})
-
-// app.options('/movies/:id', (req, res) => {
-//      const origin = req.header('origin')
-
-//     if(ACCEPTED_ORIGINS.includes(origin) || !origin){
-//         res.header('Access-Control-Allow-Origon', origin)
-//         res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
-//     }
-//     res.send(200)
-// })
+app.use('/movies', moviesRouter)
 
 const PORT = process.env.PORT ?? 1234
 
