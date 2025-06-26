@@ -2,6 +2,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "5.1.0",
+    "mongodb": "6.17.0",
     "zod": "3.24.3"
   },
   "devDependencies": {
@@ -10,7 +11,7 @@
   "name": "first-api-rest",
   "version": "1.0.0",
   "main": "app.js",
-  "type":"module",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --watch app.js"
