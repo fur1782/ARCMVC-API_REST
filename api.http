@@ -6,11 +6,11 @@ GET http://localhost:1234/movies
 GET http://localhost:1234/genres
 
 ### Recuperar pel·lícula per id
-GET http://localhost:1234/movies/c8a7d63f-3b04-44d3-9d95-8782fd7dcfaf
+GET http://localhost:1234/movies/9c6adabc-527f-11f0-bcd6-d843ae8f018a
 
 
 ### Recuperar pel·lícules per genere
-GET http://localhost:1234/movies?genre=action
+GET http://localhost:1234/movies?genre=crime
 
 ### Crea una pel·lícula
 
@@ -30,11 +30,11 @@ Content-Type: application/json
 }
 
 ### Eliminar una pel·lícula
-DELETE http://localhost:1234/movies/dcdd0fad-a94c-4810-8acc-5f108d3b18c3
+DELETE http://localhost:1234/movies/042beb5c-54e9-11f0-8445-d843ae8f018a
 
 ### Actualitzar un pel·lícula
 
-PATCH http://localhost:1234/movies/c8a7d63f-3b04-44d3-9d95-8782fd7dcfaf
+PATCH http://localhost:1234/movies/9e87e5ab-54e9-11f0-8445-d843ae8f018a
 Content-Type: application/json
 
 {
